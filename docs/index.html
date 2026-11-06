@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -21,49 +22,84 @@
 
   <style>
     html, body {
-      margin: 0; padding: 0; width: 100%; height: 100%;
-      overflow: hidden; background: #0b0b0d;
-      -webkit-user-select: none; user-select: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0b0b0d;
+      -webkit-user-select: none;
+      user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
-    #unity-container { position: fixed; inset: 0; }
+
+    #unity-container {
+      position: fixed;
+      inset: 0;
+    }
+
     #unity-canvas {
-      width: 100%; height: 100%; display: block; background: #0b0b0d;
-      opacity: 0; transition: opacity 0.8s ease;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #0b0b0d;
+      opacity: 0;
+      transition: opacity 0.8s ease;
       outline: none;
     }
-    #unity-canvas.ready { opacity: 1; }
+
+    #unity-canvas.ready {
+      opacity: 1;
+    }
 
     #loader {
-      position: fixed; inset: 0; z-index: 10;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       background: radial-gradient(ellipse at center, #17171b 0%, #0b0b0d 70%);
       transition: opacity 0.8s ease, visibility 0.8s;
     }
-    #loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    #loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
 
     .logo {
-      width: 72px; height: 72px; object-fit: contain;
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
       animation: float 3s ease-in-out infinite;
     }
-    .title {
-      margin: 28px 0 0;
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      font-size: 22px; font-weight: 300;
-      letter-spacing: 0.5em; padding-left: 0.5em;
-      color: #f2f2f2; text-transform: uppercase;
-    }
+
     .bar {
-      margin-top: 32px; width: 180px; height: 2px;
-      background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;
+      margin-top: 32px;
+      width: 180px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
     }
+
     #bar-fill {
-      width: 0%; height: 100%; background: #fff;
+      width: 0%;
+      height: 100%;
+      background: #fff;
       transition: width 0.25s ease-out;
     }
+
     @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-6px);
+      }
     }
   </style>
 </head>
@@ -74,21 +110,23 @@
 
   <div id="loader">
     <img class="logo" src="logo.png" alt="Kibako Pool">
-    <h1 class="title">Kibako Pool</h1>
-    <div class="bar"><div id="bar-fill"></div></div>
+    <div class="bar">
+      <div id="bar-fill"></div>
+    </div>
   </div>
 
   <script>
     var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/d767bda0d0b40df6480d10b465c949e6.loader.js";
+    var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
+
     var config = {
-      dataUrl: buildUrl + "/ccfe72137b2fb61f8c9f900999313c90.data",
-      frameworkUrl: buildUrl + "/a776c8f3176d1752ad7b6726d316e0cf.framework.js",
-      codeUrl: buildUrl + "/9a9524ba808ee2a45adf31f7d794ddc8.wasm",
+      dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+      frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+      codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
       streamingAssetsUrl: "StreamingAssets",
-      companyName: "Kibako Dev",
-      productName: "Kibako Pool",
-      productVersion: "0.1.0",
+      companyName: "{{{ COMPANY_NAME }}}",
+      productName: "{{{ PRODUCT_NAME }}}",
+      productVersion: "{{{ PRODUCT_VERSION }}}",
       devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
     };
 
@@ -96,26 +134,35 @@
     var loader = document.querySelector("#loader");
     var barFill = document.querySelector("#bar-fill");
 
-    canvas.addEventListener("contextmenu", function (e) { e.preventDefault(); });
-    document.addEventListener("wheel", function (e) { e.preventDefault(); }, { passive: false });
+    canvas.addEventListener("contextmenu", function (e) {
+      e.preventDefault();
+    });
+
+    document.addEventListener("wheel", function (e) {
+      e.preventDefault();
+    }, { passive: false });
 
     var script = document.createElement("script");
     script.src = loaderUrl;
+
     script.onload = function () {
       createUnityInstance(canvas, config, function (progress) {
         barFill.style.width = (progress * 100) + "%";
       }).then(function (instance) {
         window.unityInstance = instance;
         barFill.style.width = "100%";
+
         setTimeout(function () {
           canvas.classList.add("ready");
           loader.classList.add("hidden");
           canvas.focus();
         }, 300);
+
       }).catch(function (err) {
         console.error(err);
       });
     };
+
     document.body.appendChild(script);
   </script>
 </body>

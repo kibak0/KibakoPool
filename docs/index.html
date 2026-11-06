@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Kibako Pool</title>
+  <style>
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+    #unity-container { position: fixed; width: 100%; height: 100%; }
+    #unity-canvas { width: 100%; height: 100%; display: block; background: #000; }
+  </style>
+</head>
+<body>
+  <div id="unity-container">
+    <canvas id="unity-canvas"></canvas>
+  </div>
+  <script>
+    var buildUrl = "Build";
+    var loaderUrl = buildUrl + "/d767bda0d0b40df6480d10b465c949e6.loader.js";
+    var config = {
+      dataUrl: buildUrl + "/f5f24f005d14898e04d971ea59e1b60d.data",
+      frameworkUrl: buildUrl + "/a776c8f3176d1752ad7b6726d316e0cf.framework.js",
+      codeUrl: buildUrl + "/9a9524ba808ee2a45adf31f7d794ddc8.wasm",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "Kibako Dev",
+      productName: "Kibako Pool",
+      productVersion: "0.1.0",
+      devicePixelRatio: window.devicePixelRatio, // netteté sur écrans HiDPI
+    };
+    var canvas = document.querySelector("#unity-canvas");
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config).then((instance) => {
+        window.unityInstance = instance;
+      });
+    };
+    document.body.appendChild(script);
+  </script>
+</body>
+</html>
